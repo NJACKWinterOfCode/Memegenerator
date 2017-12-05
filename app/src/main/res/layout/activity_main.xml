@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.mdhvr.memegenerator.MainActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -54,3 +62,5 @@
         app:layout_constraintGuide_percent="0.02" />
 
 </android.support.constraint.ConstraintLayout>
+
+</ScrollView>
