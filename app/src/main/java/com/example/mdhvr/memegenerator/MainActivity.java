@@ -1,16 +1,20 @@
 package com.example.mdhvr.memegenerator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -20,6 +24,13 @@ public class MainActivity extends AppCompatActivity implements topfragment.topfr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/impact.ttf");
+        TextView topTextView = (TextView)findViewById(R.id.toptextview);
+        TextView bottomTextView = (TextView)findViewById(R.id.bottomtextview);
+
+        topTextView.setTypeface(type);
+        bottomTextView.setTypeface(type);
     }
 
     @Override
@@ -27,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements topfragment.topfr
 
         bottomfragment bottomf = (bottomfragment) getSupportFragmentManager().findFragmentById(R.id.fragment2);
         bottomf.setMemetext(top, bottom);
+
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
 
     }
 
