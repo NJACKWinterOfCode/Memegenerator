@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,33 +11,38 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:adjustViewBounds="true"
-        android:src="@drawable/radix"
-        />
+        android:src="@drawable/radix" />
 
     <TextView
         android:id="@+id/toptextview"
+        style="@style/shadoweffect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/image"
         android:layout_alignRight="@id/image"
         android:layout_alignTop="@id/image"
         android:layout_margin="1dp"
+        android:fontFamily="@font/impact"
+        android:freezesText="true"
         android:gravity="center"
-        android:text="Top"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:freezesText="true"/>
+        android:text="TOP"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/bottomtextview"
+        style="@style/shadoweffect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/image"
         android:layout_alignLeft="@id/image"
         android:layout_alignRight="@id/image"
         android:layout_margin="1dp"
+        android:fontFamily="@font/impact"
+        android:freezesText="true"
         android:gravity="center"
-        android:text="Bottom"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:freezesText="true"/>
+        android:text="BOTTOM"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

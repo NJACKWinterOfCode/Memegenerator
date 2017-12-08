@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="shadoweffect">
+        <item name="android:paddingLeft">4px</item>
+        <item name="android:paddingBottom">4px</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">10</item>
+    </style>
+
 </resources>
