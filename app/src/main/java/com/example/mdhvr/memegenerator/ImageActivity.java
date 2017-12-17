@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -37,16 +38,19 @@ public class ImageActivity extends AppCompatActivity {
         @Override
         public void onSuccess(Sharer.Result result) {
             Toast.makeText(ImageActivity.this,"Posted succesfully",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Success!");
         }
 
         @Override
         public void onCancel() {
             Toast.makeText(ImageActivity.this,"Post cancelled",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Canceled!");
         }
 
         @Override
         public void onError(FacebookException error) {
             Toast.makeText(ImageActivity.this,"Error in posting",Toast.LENGTH_SHORT).show();
+            Log.d("Facebook","Error!");
         }
     };
     @Override
