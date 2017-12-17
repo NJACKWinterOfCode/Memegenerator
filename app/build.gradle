@@ -29,4 +29,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.github.yalantis:ucrop:2.2.1'
     compile 'com.pes.materialcolorpicker:library:1.2.0'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 }
