@@ -27,5 +27,9 @@
         android:icon="@drawable/share"
         android:title="Share"
         app:showAsAction="always"/>
-
+    <item
+        android:id="@+id/facebook"
+        android:title="Facebook"
+        app:showAsAction="ifRoom"
+        />
 </menu>
