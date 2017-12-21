@@ -200,7 +200,7 @@ public class ImageActivity extends AppCompatActivity {
                 + "/MemeGenerator/");
         dir.mkdir();
 
-        // Create a name for the saved image
+        // Create a name for the saved image....
         String nameOfImage= "meme"+System.currentTimeMillis()+ ".png";
         File file = new File(dir, nameOfImage);
         path = Uri.parse(file.getAbsolutePath());
