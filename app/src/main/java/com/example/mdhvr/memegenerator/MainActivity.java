@@ -18,6 +18,7 @@ import android.support.v7.widget.SearchView;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,21 +29,41 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = "MainActivity";
     private Context context;
     public static Bitmap mutableBitmap;
     private ImageView imageView;
     private Spinner top_spinner, bottom_spinner;
     private int top_text_size, bottom_text_size;
     private int top_text_color= Color.WHITE, bottom_text_color= Color.WHITE;
+    private ListView listView;
+    private LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         Button add_text_button= findViewById(R.id.add_text_button);
         Button top_color_picker = findViewById(R.id.top_text_color_picker);
         Button bottom_color_picker= findViewById(R.id.bottom_text_color_picker);
+
+        listView= findViewById(R.id.list_view);
+        linearLayout=findViewById(R.id.linear_layout_main);
 
         final EditText top_text= findViewById(R.id.top_text);
         final EditText bottom_text= findViewById(R.id.bottom_text);
@@ -264,9 +288,116 @@ public class MainActivity extends AppCompatActivity {
         return true;
 
     }
+    private String base_url= "https://api.qwant.com/api/search/images?offset=0&q=";
 
     private void startSearch(String query) {
 
+        String url= base_url+ encodeURIComponent(query);
+
+
+    }
+
+    private String makeconnect(URL url) throws IOException {
+
+        Log.v(LOG_TAG,"inside makeconnect");
+        String jsonResponse = "";
+        if(url==null){
+            return jsonResponse;
+        }
+        InputStream inputstream = null;
+        HttpURLConnection httpurl = null;
+        try {
+            httpurl = (HttpURLConnection) url.openConnection();
+            httpurl.setRequestMethod("GET");
+            httpurl.setConnectTimeout(15000);
+            httpurl.setReadTimeout(10000);
+            httpurl.connect();
+            if (httpurl.getResponseCode() == 200) {
+                inputstream = httpurl.getInputStream();
+                jsonResponse = readFromInputStream(inputstream);
+            }
+            else {
+                Log.e(LOG_TAG, "Error response code: " + httpurl.getResponseCode());
+            }
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "unable to connect",e);
+        } finally {
+            if (httpurl != null)
+                httpurl.disconnect();
+            if (inputstream != null)
+
+                inputstream.close();
+
+        }
+        return jsonResponse;
+    }
+
+    private String readFromInputStream(InputStream inputstream) throws IOException {
+        Log.v(LOG_TAG,"inside readfrominputstream");
+        StringBuilder output = new StringBuilder();
+        if (inputstream != null) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputstream, Charset.forName("UTF-8"));
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            String line = reader.readLine();
+            while (line != null) {
+                output.append(line);
+                line=reader.readLine();
+            }
+        }
+        return output.toString();
+    }
+
+    private static List<String> extractImageURLs(String Jsonresponse) {
+        // If the JSON string is empty or null, then return early.
+        Log.v(LOG_TAG,"inside extract extractIamgeURLs method");
+
+        if (TextUtils.isEmpty(Jsonresponse)) {
+            Log.v(LOG_TAG,"jsonresponse was empty");
+            return null;
+        }
+
+        List<String> listOfURLs = new ArrayList<>();
+        try {
+            JSONObject jsonObject = new JSONObject(Jsonresponse);
+            JSONObject data= jsonObject.getJSONObject("data");
+            JSONObject results= data.getJSONObject("results");
+            JSONArray items= results.getJSONArray("items");
+            for(int i=0;i<items.length();i++){
+
+                String image_url= items.getJSONObject(i).getString("media");
+                listOfURLs.add(image_url);
+            }
+
+        }
+        catch (JSONException e) {
+
+            Log.e(LOG_TAG, "Problem parsing the JSON results", e);
+        }
+
+        return listOfURLs;
+    }
+
+    private String encodeURIComponent(String s) {
+        String result;
+        try
+        {
+            result = URLEncoder.encode(s, "UTF-8")
+                    .replaceAll("\\+", "%20")
+                    .replaceAll("\\%21", "!")
+                    .replaceAll("\\%27", "'")
+                    .replaceAll("\\%28", "(")
+                    .replaceAll("\\%29", ")")
+                    .replaceAll("\\%7E", "~");
+        }
+
+        // This exception should never occur.
+        catch (UnsupportedEncodingException e)
+        {
+            result = s;
+        }
+
+        return result;
     }
 
     private void hideKeyBoard(){
