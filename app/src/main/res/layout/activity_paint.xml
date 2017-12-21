@@ -1,72 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/materialcolorpicker__black"
     tools:context="com.example.mdhvr.memegenerator.PaintActivity">
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/paint_image"
-    android:src="@drawable/placeholder"
-    android:layout_centerInParent="true"/>
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/paint_image"
+        android:src="@drawable/placeholder"
+        />
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:id="@+id/paint_bottom_toolbar"
+        android:background="#66000000"
+        android:elevation="1dp">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="4dp">
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/cancel"
+            android:layout_weight="1"
+            android:id="@+id/paint_cancel"/>
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@mipmap/pen"
-            android:id="@+id/paint_pen"
-            android:layout_margin="4dp"/>
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/undo"
-            android:layout_margin="4dp"
-            android:id="@+id/paint_undo"/>
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@mipmap/pallete"
-            android:layout_margin="4dp"
-            android:id="@+id/paint_pallete"/>
+            android:layout_weight="1"
+            android:id="@+id/paint_pen" />
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_margin="4dp"
-            android:id="@+id/paint_nav_right"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
-    <ImageView
+            android:src="@mipmap/pallete"
+            android:layout_weight="1"
+            android:id="@+id/paint_pallete"/>
+
+        <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/done"
-        android:layout_margin="4dp"
         android:id="@+id/paint_done"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/cancel"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="4dp"
-        android:layout_toLeftOf="@id/paint_done"
-        android:id="@+id/paint_cancel"/>
+            android:layout_weight="1"/>
+
     </LinearLayout>
-</RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+</FrameLayout>

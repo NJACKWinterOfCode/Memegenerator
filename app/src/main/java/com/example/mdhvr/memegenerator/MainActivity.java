@@ -49,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
+
         context= getApplicationContext();
         hideKeyBoard();
         Button choose_image_button= findViewById(R.id.choose_image_button);
@@ -66,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         bottom_spinner= findViewById(R.id.bottom_text_spinner);
 
         setupSpinners();
+        //when there is no image chosen
+        Bitmap bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        Bitmap bitmap2 = bitmap1.copy(Bitmap.Config.ARGB_8888, true);
+        mutableBitmap=bitmap2;
 
         choose_image_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 pickImage(view);
             }
         });
+
         add_text_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
