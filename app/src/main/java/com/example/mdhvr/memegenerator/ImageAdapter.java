@@ -1,31 +1,43 @@
 package com.example.mdhvr.memegenerator;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 /**
  * Created by ishita sharma on 12/21/2017.
  */
 
-public class ImageAdapter extends BaseAdapter {
-    @Override
-    public int getCount() {
-        return 0;
+public class ImageAdapter extends ArrayAdapter<String> {
+
+    private Context context;
+
+    public ImageAdapter(Context context, List<String> stringList){
+        super(context,0,stringList);
+        this.context=context;
     }
 
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+    public View getView(int i, View view, ViewGroup parent) {
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        return null;
+        if(view==null){
+            view = LayoutInflater.from(getContext()).inflate(R.layout.image_layout,parent,false);
+
+        }
+
+        String image_uri= getItem(i);
+        ImageView imageView= view.findViewById(R.id.searched_image_item);
+
+        Picasso.with(context).load(image_uri).into(imageView);
+
+        return view;
     }
 }

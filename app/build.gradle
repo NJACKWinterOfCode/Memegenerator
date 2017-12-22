@@ -30,4 +30,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.github.takusemba:cropme:1.0.3'
     compile 'com.android.support:support-dynamic-animation:26.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

@@ -1,7 +1,10 @@
 package com.example.mdhvr.memegenerator;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
@@ -10,11 +13,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -31,6 +35,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Spinner;
 
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
@@ -46,13 +52,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<String>>{
 
     private static final String LOG_TAG = "MainActivity";
     private Context context;
@@ -63,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private int top_text_color= Color.WHITE, bottom_text_color= Color.WHITE;
     private ListView listView;
     private LinearLayout linearLayout;
+    private ProgressBar progressBar;
+    private ImageAdapter imageAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
 
         listView= findViewById(R.id.list_view);
         linearLayout=findViewById(R.id.linear_layout_main);
+        progressBar= findViewById(R.id.progress_bar);
+        imageAdapter= new ImageAdapter(context,new ArrayList<String>());
+        listView.setAdapter(imageAdapter);
 
         final EditText top_text= findViewById(R.id.top_text);
         final EditText bottom_text= findViewById(R.id.bottom_text);
@@ -139,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     canvas.translate(textX, textY);
                     mTopTextLayout.draw(canvas);
 
-                 //foe bottom text
+                 //for bottom text
                     Paint bottomPaint= new Paint();
                     bottomPaint.setColor(bottom_text_color);
                     bottomPaint.setTextSize(bottom_text_size);
@@ -263,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.v(LOG_TAG,"Inside text submit");
                 startSearch(query);
                 return true;
             }
@@ -280,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!queryTextFocused) {
                     // hide the search box if the user focuses on something else
                     searchView.setIconified(true);
-                    searchItem.collapseActionView();
+                    //searchItem.collapseActionView();
                 }
             }
         });
@@ -289,12 +303,79 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private String base_url= "https://api.qwant.com/api/search/images?offset=0&q=";
+    private String query;
 
     private void startSearch(String query) {
+        this.query=query;
+        Log.v(LOG_TAG,"Inside start search");
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
 
-        String url= base_url+ encodeURIComponent(query);
+        //if(jsonResponse==null){
+            //TODO add empty view
+
+        ConnectivityManager ccmgr =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = ccmgr.getActiveNetworkInfo();
+
+        if(networkInfo!=null&&networkInfo.isConnected()){
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(1, null, MainActivity.this);
+            Log.v(LOG_TAG,"loader initiated");
+        }else{
+            //TODO user dosen't has internet connection.
+            Log.v(LOG_TAG,"No internet connection");
+        }
 
 
+    }
+
+    @Override
+    public Loader<List<String>> onCreateLoader(int i, Bundle bundle) {
+        Log.v(LOG_TAG,"Inside onCreateLoader");
+
+        return new AsyncTaskLoader<List<String>>(context) {
+            @Override
+            public List<String> loadInBackground() {
+                Log.v(LOG_TAG,"Inside load in background");
+                String url= base_url+ encodeURIComponent(query);
+                URL u=null;
+                String jsonResponse=null;
+                List<String> image_list;
+                try {
+                    u = new URL(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonResponse = makeconnect(u);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                image_list= extractImageURLs(jsonResponse);
+                return image_list;
+            }
+            @Override
+            protected void onStartLoading() {
+                forceLoad();
+            }
+
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<String>> loader, List<String> stringList) {
+        Log.v(LOG_TAG,"Inside onLoadFinished");
+        progressBar.setVisibility(View.GONE);
+        linearLayout.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
+        imageAdapter.addAll(stringList);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<String>> loader) {
+        imageAdapter.clear();
     }
 
     private String makeconnect(URL url) throws IOException {
@@ -307,10 +388,11 @@ public class MainActivity extends AppCompatActivity {
         InputStream inputstream = null;
         HttpURLConnection httpurl = null;
         try {
+            Log.v(LOG_TAG,url.toString());
             httpurl = (HttpURLConnection) url.openConnection();
             httpurl.setRequestMethod("GET");
-            httpurl.setConnectTimeout(15000);
-            httpurl.setReadTimeout(10000);
+            httpurl.setConnectTimeout(3000);
+            httpurl.setReadTimeout(3000);
             httpurl.connect();
             if (httpurl.getResponseCode() == 200) {
                 inputstream = httpurl.getInputStream();
@@ -348,9 +430,9 @@ public class MainActivity extends AppCompatActivity {
         return output.toString();
     }
 
-    private static List<String> extractImageURLs(String Jsonresponse) {
+    private List<String> extractImageURLs(String Jsonresponse) {
         // If the JSON string is empty or null, then return early.
-        Log.v(LOG_TAG,"inside extract extractIamgeURLs method");
+        Log.v(LOG_TAG,"inside extractImageURLs method");
 
         if (TextUtils.isEmpty(Jsonresponse)) {
             Log.v(LOG_TAG,"jsonresponse was empty");
@@ -361,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(Jsonresponse);
             JSONObject data= jsonObject.getJSONObject("data");
-            JSONObject results= data.getJSONObject("results");
+            JSONObject results= data.getJSONObject("result");
             JSONArray items= results.getJSONArray("items");
             for(int i=0;i<items.length();i++){
 
@@ -372,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (JSONException e) {
 
-            Log.e(LOG_TAG, "Problem parsing the JSON results", e);
+            Log.v(LOG_TAG, "Problem parsing the JSON results", e);
         }
 
         return listOfURLs;
@@ -395,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
         catch (UnsupportedEncodingException e)
         {
             result = s;
+            Log.v(LOG_TAG,e.toString());
         }
 
         return result;
@@ -422,10 +505,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pickImage (View v){
         Intent intent = new Intent();
-// Show only images, no videos or anything else
+        // Show only images, no videos or anything else
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-// Always show the chooser (if there are multiple options available)
+        // Always show the chooser (if there are multiple options available)
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
 
@@ -458,5 +541,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }
