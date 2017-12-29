@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             loaderManager.initLoader(1, null, MainActivity.this);
             Log.v(LOG_TAG,"loader initiated");
         }else{
-            //TODO user dosen't has internet connection.
+
             Log.v(LOG_TAG,"No internet connection");
         }
 
