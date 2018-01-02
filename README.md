@@ -21,7 +21,7 @@
 <table>
     <tr>
      <td><img src="docs/Screenshot_4.png" height="420" width="270"></td>
-     <td><img src="docs/Screenshot_5.png"height="420" width="270"></td>
+     <td><img src="docs/Screenshot_5.png" height="420" width="270"></td>
     </tr>
   </table>
   
@@ -29,14 +29,14 @@
 <table>
     <tr>
      <td><img src="docs/Screenshot6.png" height="420" width="270"></td>
-     <td><img src="docs/Screenshot_6.png"height="420" width="270"></td>
-     <td><img src="docs/Screenshot_7.png"height="420" width="270"></td>
+     <td><img src="docs/Screenshot_6.png" height="420" width="270"></td>
+     <td><img src="docs/Screenshot_7.png" height="420" width="270"></td>
     </tr>
     <tr>
 
      <td><img src="docs/Screenshot_8.png" height="420" width="270"></td>
-     <td><img src="docs/Screenshot_9.png"height="420" width="270"></td>
-     <td><img src="docs/Screenshot_10.png"height="420" width="270"></td>
+     <td><img src="docs/Screenshot_9.png" height="420" width="270"></td>
+     <td><img src="docs/Screenshot_10.png" height="420" width="270"></td>
     </tr>
  </table>
   
