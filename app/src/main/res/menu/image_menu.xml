@@ -18,6 +18,11 @@
         android:title="Delete"
         app:showAsAction="always"/>
     <item
+        android:id="@+id/done"
+        android:icon="@drawable/done"
+        android:title="Done"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/save"
         android:icon="@drawable/save"
         android:title="Save"
